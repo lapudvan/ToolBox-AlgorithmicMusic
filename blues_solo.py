@@ -30,7 +30,27 @@ solo = AudioStream(sampling_rate, 1)
 	See: http://en.wikipedia.org/wiki/Blues_scale """
 blues_scale = [25, 28, 30, 31, 32, 35, 37, 40, 42, 43, 44, 47, 49, 52, 54, 55, 56, 59, 61]
 beats_per_minute = 45				# Let's make a slow blues solo
+times = [0.4, 0.6, 0.8, 1] # random to create swing
+volumes = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] # random volumes for dynamics
 
-add_note(solo, bass, blues_scale[0], 1.0, beats_per_minute, 1.0)
+curr_note = 6
+add_note(solo, bass, blues_scale[curr_note], 1.0, beats_per_minute, 1.0)
+
+licks = [ [ [1,choice(times)], [1,choice(times)], [1,choice(times)], [1,choice(times)] ], 
+    [ [-1,choice(times)], [-1,choice(times)], [-1,choice(times)], [-1,choice(times)] ], 
+    [ [2,choice(times)], [3,choice(times)], [-3,choice(times)], [-2,choice(times)] ], 
+    [ [2,choice(times)], [2,choice(times)], [2,choice(times)], [2,choice(times)] ] ]
+
+for i in range(8):
+    lick = choice(licks)
+    for note in lick:
+        curr_note += note[0]
+
+        # Stopes note from being out of range
+        if curr_note < 0 or curr_note > len(blues_scale)-1:
+            curr_note = 1
+
+        add_note(solo, bass, blues_scale[curr_note], note[1], beats_per_minute, choice(volumes))
 
 solo >> "blues_solo.wav"
+
